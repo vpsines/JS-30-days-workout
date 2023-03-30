@@ -39,7 +39,7 @@ const paragraph = `I love teaching. If you do not love teaching what else can yo
 function tenMostFrequentWords(str,n=10){
     let pattern = /[^ .][A-Za-z]*/g
     let words=[]
-    for(let word of paragraph.match(pattern)){
+    for(let word of str.match(pattern)){
         let index = words.findIndex((e)=> e.word == word)
         if(index != -1){
             words[index].count += 1
