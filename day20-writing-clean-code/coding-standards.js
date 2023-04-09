@@ -2,7 +2,7 @@
 
 // 1.Air BnB Style guide
 
-// 2.Standard JS styling guide
+// 2.Standard JS styling guidegit
 
 // 3.Google Styling Guide
 
