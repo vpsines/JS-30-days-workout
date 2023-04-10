@@ -1,69 +1,152 @@
-document.body.style.backgroundImage = "url('images/galaxy.gif')"
+document.body.style.backgroundImage = "url('images/galaxy.gif')";
 
 const planets = [
-    {name:'Earth',g:9.8,image:'earth.png'},
-    {name:'Pluto',g:0.7,image:'pluto.png'}
-]
+  { name: "Mercury", g: 3.7, image: "mercury.png" },
+  { name: "Venus", g: 8.9, image: "venus.png" },
+  { name: "Earth", g: 9.8, image: "earth.png" },
+  { name: "Moon", g: 1.6, image: "moon.png" },
+  { name: "Mars", g: 3.7, image: "mars.png" },
+  { name: "Jupiter", g: 23.1, image: "jupiter.png" },
+  { name: "Saturn", g: 9, image: "saturn.png" },
+  { name: "Uranus", g: 8.7, image: "uranus.png" },
+  { name: "Neptune", g: 11, image: "neptune.png" },
+  { name: "Pluto", g: 0.7, image: "pluto.png" },
+];
 
-const heading = document.createElement('h1')
-heading.textContent = 'Calculate a weight of an object on a planet'
-heading.style.fontSize = '42px'
-heading.style.fontWeight = 'bold'
-heading.style.textAlign = 'center'
-heading.style.letterSpacing = '1px'
-heading.style.color = 'white'
-heading.style.textShadow = '2px 0px 2px white'
-document.body.appendChild(heading)
+const indexOfEarth = planets.findIndex((e) => e.name == "Earth");
+let currentPlanet;
 
-const inputDiv = document.createElement('div')
-inputDiv.style.width = '40%'
-inputDiv.style.margin = 'auto'
-inputDiv.style.paddingTop = '40px'
+const heading = document.createElement("h1");
+heading.textContent = "Calculate a weight of an object on a planet";
+heading.style.fontSize = "42px";
+heading.style.fontWeight = "bold";
+heading.style.textAlign = "center";
+heading.style.letterSpacing = "1px";
+heading.style.color = "white";
+heading.style.textShadow = "2px 0px 2px white";
+document.body.appendChild(heading);
 
-const mass = document.createElement('input')
-mass.style.width = '50%'
-mass.placeholder = 'Mass In killogram'
-mass.style.display = 'inline-block'
-mass.style.height = '30px'
-inputDiv.appendChild(mass)
+const inputDiv = document.createElement("div");
+inputDiv.style.width = "40%";
+inputDiv.style.margin = "auto";
+inputDiv.style.paddingTop = "40px";
 
-const planetDropDown = document.createElement('select')
-planetDropDown.style.width = '25%'
-planetDropDown.style.display = 'inline-block'
-planetDropDown.style.height = '34px'
-planetDropDown.style.margin = '0px 8px'
-planetDropDown.style.borderRadius = '5px'
+const mass = document.createElement("input");
+mass.style.width = "50%";
+mass.placeholder = "Mass In killogram";
+mass.style.display = "inline-block";
+mass.style.height = "30px";
+inputDiv.appendChild(mass);
 
-for(const planet of planets){
-    const item = document.createElement('option')
-    item.value = planet.name
-    item.textContent = planet.name
-    item.style.background= 'grey'
-    item.style.padding= '2px'
-    planetDropDown.appendChild(item)
+const planetDropDown = document.createElement("select");
+planetDropDown.style.width = "25%";
+planetDropDown.style.display = "inline-block";
+planetDropDown.style.height = "34px";
+planetDropDown.style.margin = "0px 8px";
+planetDropDown.style.borderRadius = "5px";
+
+for (let i = 0; i < planets.length; i++) {
+  if (i == 0) {
+    const placeHolderItem = document.createElement("option");
+    placeHolderItem.style.background = "grey";
+    placeHolderItem.style.padding = "2px";
+    placeHolderItem.value = "";
+    placeHolderItem.selected = true;
+    placeHolderItem.disabled = true;
+
+    placeHolderItem.textContent = "-- select planet --";
+    planetDropDown.appendChild(placeHolderItem);
+  }
+  const item = document.createElement("option");
+  item.style.background = "grey";
+  item.style.padding = "2px";
+  item.value = planets[i].name;
+  item.textContent = planets[i].name;
+  planetDropDown.appendChild(item);
 }
-inputDiv.appendChild(planetDropDown)
+inputDiv.appendChild(planetDropDown);
 
-const generateButton = document.createElement('button')
-generateButton.style.width = '20%'
-generateButton.style.height = '30px'
-generateButton.style.borderRadius = '5px'
-generateButton.textContent = 'Calculate Weight'
-generateButton.style.color = 'white'
-generateButton.style.fontSize = '12px'
-generateButton.style.background = 'grey'
-generateButton.style.display = 'inline-block'
-planetDropDown.style.padding = '2px'
+planetDropDown.addEventListener("input", (e) => {
+  if (mass.value) {
+    const selectedPlanetIndex = planets.findIndex((p)=> p.name == e.target.value)
 
-inputDiv.appendChild(generateButton)
+    planetImage.style.backgroundImage = `url('images/${planets[selectedPlanetIndex].image}')`;
 
-document.body.appendChild(inputDiv)
+    const outputBox = document.createElement("div");
+    outputBox.style.height = "40%";
+    outputBox.style.width = "40%";
+    outputBox.style.margin = "auto auto";
 
+    outputBox.style.flexGrow = "1";
+    outputBox.style.backgroundColor = "rgba(192,192,192,0.1)";
 
-const outputDiv = document.createElement('div')
-outputDiv.style.width = '70%'
-outputDiv.style.margin = 'auto'
-outputDiv.style.padding = '100px 0'
-outputDiv.style.height = '300px'
+    const outputTitle = document.createElement("div");
+    outputTitle.textContent = "The weight of the object on ";
+    outputTitle.style.textAlign = "center";
+    outputTitle.style.color = "white";
+    outputTitle.style.fontSize = "18px";
+    outputTitle.style.padding = "15px";
 
-document.body.appendChild(outputDiv)
+    const planetName = document.createElement("span");
+    planetName.textContent = `${planets[selectedPlanetIndex].name}`;
+    planetName.style.fontWeight = "bold";
+    outputTitle.appendChild(planetName);
+
+    outputBox.appendChild(outputTitle);
+
+    const planetWeight = document.createElement("div");
+    const weight = planets[selectedPlanetIndex].g * parseFloat(mass.value)
+
+    planetWeight.textContent = `${weight} N`;
+    planetWeight.style.textAlign = "center";
+    planetWeight.style.lineHeight = "100px";
+
+    planetWeight.style.margin = "auto";
+    planetWeight.style.width = "100px";
+    planetWeight.style.height = "100px";
+    planetWeight.style.fontWeight = "bold";
+    planetWeight.style.fontSize = "22px";
+    planetWeight.style.borderRadius = "50%";
+    planetWeight.style.color = "white";
+    planetWeight.style.backgroundColor = "rgba(192,192,192,0.2)";
+
+    outputBox.appendChild(planetWeight);
+
+    outputDiv.appendChild(outputBox);
+  }
+});
+
+const generateButton = document.createElement("button");
+generateButton.style.width = "20%";
+generateButton.style.height = "30px";
+generateButton.style.borderRadius = "5px";
+generateButton.textContent = "Calculate Weight";
+generateButton.style.color = "white";
+generateButton.style.fontSize = "12px";
+generateButton.style.background = "grey";
+generateButton.style.display = "inline-block";
+planetDropDown.style.padding = "2px";
+
+inputDiv.appendChild(generateButton);
+
+document.body.appendChild(inputDiv);
+
+const outputDiv = document.createElement("div");
+outputDiv.style.width = "70%";
+outputDiv.style.margin = "20px auto";
+outputDiv.style.padding = "40px";
+outputDiv.style.height = "450px";
+outputDiv.style.backgroundColor = "rgba(192,192,192,0.2)";
+outputDiv.style.display = "flex";
+outputDiv.style.alignItems = "stretch";
+
+const planetImage = document.createElement("div");
+planetImage.style.width = "40%";
+planetImage.style.height = "100%";
+planetImage.style.backgroundImage = "url('images/earth.png')";
+planetImage.style.backgroundRepeat = "no-repeat";
+planetImage.style.backgroundSize = "contain";
+planetImage.style.flexGrow = "1";
+outputDiv.appendChild(planetImage);
+
+document.body.appendChild(outputDiv);
