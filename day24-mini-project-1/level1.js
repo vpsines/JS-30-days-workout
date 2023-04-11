@@ -66,69 +66,19 @@ for (let i = 0; i < planets.length; i++) {
 }
 inputDiv.appendChild(planetDropDown);
 
-planetDropDown.addEventListener("input", (e) => {
-  if (mass.value) {
-    const selectedPlanetIndex = planets.findIndex((p)=> p.name == e.target.value)
-
-    planetImage.style.backgroundImage = `url('images/${planets[selectedPlanetIndex].image}')`;
-
-    const outputBox = document.createElement("div");
-    outputBox.style.height = "40%";
-    outputBox.style.width = "40%";
-    outputBox.style.margin = "auto auto";
-
-    outputBox.style.flexGrow = "1";
-    outputBox.style.backgroundColor = "rgba(192,192,192,0.1)";
-
-    const outputTitle = document.createElement("div");
-    outputTitle.textContent = "The weight of the object on ";
-    outputTitle.style.textAlign = "center";
-    outputTitle.style.color = "white";
-    outputTitle.style.fontSize = "18px";
-    outputTitle.style.padding = "15px";
-
-    const planetName = document.createElement("span");
-    planetName.textContent = `${planets[selectedPlanetIndex].name}`;
-    planetName.style.fontWeight = "bold";
-    outputTitle.appendChild(planetName);
-
-    outputBox.appendChild(outputTitle);
-
-    const planetWeight = document.createElement("div");
-    const weight = planets[selectedPlanetIndex].g * parseFloat(mass.value)
-
-    planetWeight.textContent = `${weight} N`;
-    planetWeight.style.textAlign = "center";
-    planetWeight.style.lineHeight = "100px";
-
-    planetWeight.style.margin = "auto";
-    planetWeight.style.width = "100px";
-    planetWeight.style.height = "100px";
-    planetWeight.style.fontWeight = "bold";
-    planetWeight.style.fontSize = "22px";
-    planetWeight.style.borderRadius = "50%";
-    planetWeight.style.color = "white";
-    planetWeight.style.backgroundColor = "rgba(192,192,192,0.2)";
-
-    outputBox.appendChild(planetWeight);
-
-    outputDiv.appendChild(outputBox);
-  }
-});
-
 const generateButton = document.createElement("button");
 generateButton.style.width = "20%";
 generateButton.style.height = "30px";
 generateButton.style.borderRadius = "5px";
 generateButton.textContent = "Calculate Weight";
 generateButton.style.color = "white";
+generateButton.style.fontWeight = "bold";
 generateButton.style.fontSize = "12px";
 generateButton.style.background = "grey";
 generateButton.style.display = "inline-block";
 planetDropDown.style.padding = "2px";
 
 inputDiv.appendChild(generateButton);
-
 document.body.appendChild(inputDiv);
 
 const outputDiv = document.createElement("div");
@@ -138,15 +88,94 @@ outputDiv.style.padding = "40px";
 outputDiv.style.height = "450px";
 outputDiv.style.backgroundColor = "rgba(192,192,192,0.2)";
 outputDiv.style.display = "flex";
-outputDiv.style.alignItems = "stretch";
+outputDiv.style.alignItems = "center";
+outputDiv.style.justifyContent = 'center'
 
 const planetImage = document.createElement("div");
-planetImage.style.width = "40%";
+planetImage.style.width = "50%";
 planetImage.style.height = "100%";
+
 planetImage.style.backgroundImage = "url('images/earth.png')";
 planetImage.style.backgroundRepeat = "no-repeat";
 planetImage.style.backgroundSize = "contain";
-planetImage.style.flexGrow = "1";
 outputDiv.appendChild(planetImage);
 
+const outputBox = document.createElement("div");
+outputBox.style.width = "40%";
+outputBox.style.margin = "auto";
+outputBox.style.padding = "10px";
+outputBox.style.alignItems ='center'
+outputBox.style.justifyContent ='center'
+outputBox.style.display = "none";
+outputBox.style.backgroundColor = "rgba(192,192,192,0.1)";
+outputBox.style.flexDirection = "column"
+const outputTitle = document.createElement("div");
+outputTitle.style.textAlign = "center";
+outputTitle.style.color = "white";
+outputTitle.style.fontSize = "18px";
+outputTitle.style.padding = "10px 0";
+outputTitle.style.letterSpacing = "1px";
+
+const planetName = document.createElement("span");
+planetName.style.fontWeight = "bold";
+planetName.style.color = "white";
+planetName.style.letterSpacing = "1px";
+outputTitle.appendChild(planetName);
+
+outputBox.appendChild(outputTitle);
+
+const planetWeight = document.createElement("div");
+
+planetWeight.style.textAlign = "center";
+planetWeight.style.lineHeight = "120px";
+
+planetWeight.style.margin = "auto";
+planetWeight.style.width = "120px";
+planetWeight.style.height = "120px";
+planetWeight.style.fontWeight = "bold";
+planetWeight.style.fontSize = "22px";
+planetWeight.style.borderRadius = "50%";
+planetWeight.style.color = "white";
+planetWeight.style.backgroundColor = "rgba(192,192,192,0.2)";
+planetWeight.style.letterSpacing = "1px";
+
+outputBox.appendChild(planetWeight);
+
+outputDiv.appendChild(outputBox);
 document.body.appendChild(outputDiv);
+
+generateButton.addEventListener("click", (e) => {
+  const isPlanetImageHidden = planetImage.getAttribute("hidden");
+  const isOutputBoxHidden = planetImage.getAttribute("hidden");
+  const isPlanetWeightHidden = planetImage.getAttribute("hidden");
+
+  if (mass.value) {
+    if (planetDropDown.value) {
+      const selectedPlanetIndex = planets.findIndex(
+        (p) => p.name == planetDropDown.value
+      );
+      planetImage.style.backgroundImage = `url('images/${planets[selectedPlanetIndex].image}')`;
+      planetImage.removeAttribute("hidden");
+      outputBox.style.display = 'flex';
+      planetWeight.removeAttribute("hidden");
+      outputTitle.textContent = "The weight of the object on ";
+
+      const weight = (
+        planets[selectedPlanetIndex].g * parseFloat(mass.value)
+      ).toFixed(2);
+      planetName.textContent = `${planets[selectedPlanetIndex].name}`;
+      outputTitle.appendChild(planetName)
+      planetWeight.textContent = `${weight} N`;
+    } else {
+      outputBox.style.display = 'flex';
+      planetImage.setAttribute("hidden", "hidden");
+      planetWeight.setAttribute("hidden", "hidden");
+      outputTitle.textContent = "You have not chosen planet yet.";
+    }
+  } else {
+    outputBox.style.display = 'flex';
+    planetWeight.setAttribute("hidden", "hidden");
+    planetImage.setAttribute("hidden", "hidden");
+    outputTitle.textContent = "Mass is required";
+  }
+});
